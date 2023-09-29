@@ -1,12 +1,24 @@
 #todo-app {
     width: 300px;
     margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
 }
 
 #new-task {
     width: 200px;
+    padding: 5px;
 }
 
-.completed {
-    text-decoration: line-through;
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
 }
