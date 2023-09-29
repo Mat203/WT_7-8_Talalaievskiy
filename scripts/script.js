@@ -98,3 +98,13 @@ function cancelEdit(item, inputField, originalText) {
   item.removeChild(inputField);
   item.innerText = originalText;
 }
+
+function removeCompletedTasks() {
+  var listItems = document.querySelectorAll('#task-list li');
+
+  for (var i=0; i<listItems.length; i++) {
+      if (listItems[i].firstChild.checked) {
+          listItems[i].parentNode.removeChild(listItems[i]);
+      }
+  }
+}
