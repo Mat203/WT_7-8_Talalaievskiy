@@ -77,7 +77,6 @@ function editTask(e) {
 
   item.innerText = '';
   item.appendChild(inputField);
-  inputField.focus();
 }
 
 function saveTask(item, inputField, originalText) {
@@ -108,3 +107,24 @@ function removeCompletedTasks() {
       }
   }
 }
+
+function removeAllTasks() {
+    var listItems = document.querySelectorAll('#task-list li');
+    var uncompletedExists = false;
+  
+    for (var i=0; i<listItems.length; i++) {
+        if (!listItems[i].firstChild.checked) {
+            uncompletedExists = true;
+            break;
+        }
+    }
+  
+    if (uncompletedExists && !confirm("Are you sure you want to delete all tasks?")) {
+        return;
+    } else {
+        for (var i=0; i<listItems.length; i++) {
+        listItems[i].parentNode.removeChild(listItems[i]);
+        }
+    }
+  }
+  
