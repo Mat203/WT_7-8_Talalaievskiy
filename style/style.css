@@ -1,0 +1,12 @@
+#todo-app {
+    width: 300px;
+    margin: 0 auto;
+}
+
+#new-task {
+    width: 200px;
+}
+
+.completed {
+    text-decoration: line-through;
+}
