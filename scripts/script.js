@@ -77,6 +77,8 @@ function addTask(text, image) {
     item.appendChild(taskDate);
     item.appendChild(buttons);
 
+    item.todoItem = todoItem;
+
     list.insertBefore(item, list.childNodes[0]);
 }
 
@@ -121,18 +123,20 @@ function editTask(e) {
 }
 
 function saveTask(item, inputField, originalText) {
-  var newText = inputField.value;
-
-  if (newText && newText.trim() !== '') {
-      item.innerText = newText;
-
-      var date = new Date();
-      var dateString = ' (' + date.toLocaleDateString() + ' ' + date.toLocaleTimeString() + ')';
-      item.nextSibling.innerText = dateString;
-  } else {
-      cancelEdit(item, inputField, originalText);
+    var newText = inputField.value;
+  
+    if (newText && newText.trim() !== '') {
+        item.innerText = newText;
+  
+        var date = new Date();
+        var dateString = ' (' + date.toLocaleDateString() + ' ' + date.toLocaleTimeString() + ')';
+        item.nextSibling.innerText = dateString;
+        var list = document.getElementById('task-list');
+        list.insertBefore(item.parentNode, list.childNodes[0]); 
+    } else {
+        cancelEdit(item, inputField, originalText);
+    }
   }
-}
 
 function cancelEdit(item, inputField, originalText) {
   item.removeChild(inputField);
@@ -168,4 +172,18 @@ function removeAllTasks() {
         }
     }
   }
-  
+
+function sortTasksAsc() {
+    var list = document.getElementById('task-list');
+    Array.from(list.getElementsByTagName("li"))
+        .sort((a, b) => a.todoItem.date - b.todoItem.date)
+        .forEach(li => list.appendChild(li));
+}
+
+function sortTasksDesc() {
+    var list = document.getElementById('task-list');
+    Array.from(list.getElementsByTagName("li"))
+        .sort((a, b) => b.todoItem.date - a.todoItem.date)
+        .forEach(li => list.appendChild(li));
+}
+
