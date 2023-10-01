@@ -1,12 +1,37 @@
+class TodoItem {
+    constructor(task) {
+        this.task = task;
+        this.date = new Date();
+    }
+
+
+    getTaskDate() {
+        return ' (' + this.date.toLocaleDateString() + ' ' + this.date.toLocaleTimeString() + ')';
+    }
+}
+
+class TodoItemPremium extends TodoItem {
+    constructor(task, image) {
+        super(task);
+        this.image = image;
+    }
+
+    getTaskImage() {
+        return this.image;
+    }
+}
+
 function addTaskAlert() {
     var value = document.getElementById('new-task').value;
+    var image = document.getElementById('new-image').value;
     if (value && value.trim() !== '') {
-        addTask(value);
+        addTask(value, image);
         document.getElementById('new-task').value = '';
+        document.getElementById('new-image').value = '';
     }
 };
 
-function addTask(text) {
+function addTask(text, image) {
     var list = document.getElementById('task-list');
 
     var item = document.createElement('li');
@@ -16,14 +41,28 @@ function addTask(text) {
     checkbox.addEventListener('change', completeTask);
 
     var taskText = document.createElement('span');
-    taskText.innerText = text;
+    
+    var todoItem;
+    
+    if (image) { 
+        todoItem = new TodoItemPremium(text, image);
+        taskText.innerText = todoItem.task;
+
+        var img = document.createElement('img');
+        img.src = todoItem.getTaskImage();
+        img.style.width = '30px';
+        img.style.height = '30px';
+        
+        item.appendChild(img);
+    } else { 
+        todoItem = new TodoItem(text);
+        taskText.innerText = todoItem.task;
+    }
+    
     taskText.addEventListener('dblclick', editTask);
 
-    var date = new Date();
-    var dateString = ' (' + date.toLocaleDateString() + ' ' + date.toLocaleTimeString() + ')';
-
     var taskDate = document.createElement('span');
-    taskDate.innerText = dateString;
+    taskDate.innerText = todoItem.getTaskDate();
 
     var buttons = document.createElement('div');
 
@@ -40,6 +79,8 @@ function addTask(text) {
 
     list.insertBefore(item, list.childNodes[0]);
 }
+
+
 
 function removeTask(e) {
     var item = e.target.parentNode.parentNode;
