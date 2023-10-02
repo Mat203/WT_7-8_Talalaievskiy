@@ -222,3 +222,16 @@ function clearStorage() {
     localStorage.clear();
     location.reload();
 }
+
+function pickTodo() {
+    var list = document.getElementById('task-list');
+    var tasks = Array.from(list.getElementsByTagName("li"));
+    if (tasks.length > 0) {
+        tasks.forEach(task => task.classList.remove('active'));
+
+        var randomIndex = Math.floor(Math.random() * tasks.length);
+        var randomTask = tasks[randomIndex];
+
+        randomTask.classList.add('active');
+    }
+}
