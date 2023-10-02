@@ -1,7 +1,7 @@
 class TodoItem {
-    constructor(task) {
+    constructor(task, date) {
         this.task = task;
-        this.date = new Date();
+        this.date = date ? new Date(date) : new Date();
     }
 
 
@@ -11,8 +11,8 @@ class TodoItem {
 }
 
 class TodoItemPremium extends TodoItem {
-    constructor(task, image) {
-        super(task);
+    constructor(task, image, date) {
+        super(task, date);
         this.image = image;
     }
 
@@ -31,7 +31,7 @@ function addTaskAlert() {
     }
 };
 
-function addTask(text, image) {
+function addTask(text, image, date) {
     var list = document.getElementById('task-list');
 
     var item = document.createElement('li');
@@ -45,7 +45,7 @@ function addTask(text, image) {
     var todoItem;
     
     if (image) { 
-        todoItem = new TodoItemPremium(text, image);
+        todoItem = new TodoItemPremium(text, image, date);
         taskText.innerText = todoItem.task;
 
         var img = document.createElement('img');
@@ -55,7 +55,7 @@ function addTask(text, image) {
         
         item.appendChild(img);
     } else { 
-        todoItem = new TodoItem(text);
+        todoItem = new TodoItem(text, date);
         taskText.innerText = todoItem.task;
     }
     
@@ -80,6 +80,7 @@ function addTask(text, image) {
     item.todoItem = todoItem;
 
     list.insertBefore(item, list.childNodes[0]);
+    saveTasks();
 }
 
 
@@ -89,6 +90,7 @@ function removeTask(e) {
     var parent = item.parentNode;
     
     parent.removeChild(item);
+    saveTasks();
 }
 
 function completeTask(e) {
@@ -101,6 +103,7 @@ function completeTask(e) {
         item.style.textDecoration = 'line-through';
         item.firstChild.checked = true;
     }
+    saveTasks();
 }
 
 function editTask(e) {
@@ -120,6 +123,7 @@ function editTask(e) {
 
   item.innerText = '';
   item.appendChild(inputField);
+  saveTasks();
 }
 
 function saveTask(item, inputField, originalText) {
@@ -171,6 +175,7 @@ function removeAllTasks() {
         listItems[i].parentNode.removeChild(listItems[i]);
         }
     }
+    saveTasks();
   }
 
 function sortTasksAsc() {
@@ -178,6 +183,7 @@ function sortTasksAsc() {
     Array.from(list.getElementsByTagName("li"))
         .sort((a, b) => a.todoItem.date - b.todoItem.date)
         .forEach(li => list.appendChild(li));
+    saveTasks();
 }
 
 function sortTasksDesc() {
@@ -185,5 +191,21 @@ function sortTasksDesc() {
     Array.from(list.getElementsByTagName("li"))
         .sort((a, b) => b.todoItem.date - a.todoItem.date)
         .forEach(li => list.appendChild(li));
+    saveTasks();
 }
 
+function saveTasks() {
+    var list = document.getElementById('task-list');
+    var tasks = Array.from(list.getElementsByTagName("li")).map(li => li.todoItem);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function loadTasks() {
+    var tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    tasks.forEach(task => addTask(task.task, task.image, task.date));
+}
+
+function clearStorage() {
+    localStorage.clear();
+    location.reload();
+}
