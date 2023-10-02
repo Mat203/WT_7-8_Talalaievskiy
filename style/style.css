@@ -22,3 +22,7 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+.active {
+    background-color: #00ff9d;
+}
