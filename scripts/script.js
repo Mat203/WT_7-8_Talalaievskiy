@@ -23,7 +23,7 @@ class TodoItemPremium extends TodoItem {
 
 function addTaskAlert() {
     var value = document.getElementById('new-task').value;
-    var image = document.getElementById('new-image').value;
+    var image = document.getElementById('new-image').files[0];
     if (value && value.trim() !== '') {
         addTask(value, image);
         document.getElementById('new-task').value = '';
@@ -31,7 +31,7 @@ function addTaskAlert() {
     }
 };
 
-function addTask(text, image, date) {
+function addTask(text, imageFile, date) {
     var list = document.getElementById('task-list');
 
     var item = document.createElement('li');
@@ -44,44 +44,55 @@ function addTask(text, image, date) {
 
     var todoItem;
 
-    if (image) {
-        todoItem = new TodoItemPremium(text, image, date);
-        taskText.innerText = todoItem.task;
+    if (imageFile) {
+        var reader = new FileReader();
+        reader.onloadend = function() {
+            var base64Image = reader.result;
+            todoItem = new TodoItemPremium(text, base64Image, date);
+            taskText.innerText = todoItem.task;
 
-        var img = document.createElement('img');
-        img.src = todoItem.getTaskImage();
-        img.style.width = '30px';
-        img.style.height = '30px';
+            var img = document.createElement('img');
+            img.src = todoItem.getTaskImage();
+            img.style.width = '30px';
+            img.style.height = '30px';
 
-        item.appendChild(img);
+            item.appendChild(img);
+
+            appendTask();
+        }
+        reader.readAsDataURL(imageFile);
     } else {
         todoItem = new TodoItem(text, date);
         taskText.innerText = todoItem.task;
+        appendTask();
     }
 
-    taskText.addEventListener('dblclick', editTask);
+    function appendTask() {
+        taskText.addEventListener('dblclick', editTask);
 
-    var taskDate = document.createElement('span');
-    taskDate.innerText = todoItem.getTaskDate();
+        var taskDate = document.createElement('span');
+        taskDate.innerText = todoItem.getTaskDate();
 
-    var buttons = document.createElement('div');
+        var buttons = document.createElement('div');
 
-    var remove = document.createElement('button');
-    remove.innerText = 'Remove';
-    remove.addEventListener('click', removeTask);
+        var remove = document.createElement('button');
+        remove.innerText = 'Remove';
+        remove.addEventListener('click', removeTask);
 
-    buttons.appendChild(remove);
+        buttons.appendChild(remove);
 
-    item.appendChild(checkbox);
-    item.appendChild(taskText);
-    item.appendChild(taskDate);
-    item.appendChild(buttons);
+        item.appendChild(checkbox);
+        item.appendChild(taskText);
+        item.appendChild(taskDate);
+        item.appendChild(buttons);
 
-    item.todoItem = todoItem;
+        item.todoItem = todoItem;
 
-    list.insertBefore(item, list.childNodes[0]);
-    saveTasks();
+        list.insertBefore(item, list.childNodes[0]);
+        saveTasks();
+    }
 }
+
 
 
 
